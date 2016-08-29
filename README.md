@@ -2,14 +2,17 @@
 Astatine || At - Simple Small Ajax and HTML Form Library
 
 
-## Browser Support
-ES5 supported browsers and up. Probably older ones but who cares about those.
+## Overview
+- 3.1KB uncompressed
+- Install `npm install astatine`
+- Link `astatine.min.js`
+- ES5 browsers and up. (Probably older ones but who cares about those)
 
 
 ## API
 
 ### Astatine || At
-Library entry point. Globally use **At** or **Astatine**
+Library entry point. Globally available by using **At**.
 
 
 ### At.setup
@@ -109,3 +112,8 @@ var objectData = At.formData(element);
 ```JavaScript
 var stringData = At.serialize(data);
 ```
+
+
+## License
+Licensed Under MPL 2.0
+Copyright 2016 [Alexander Elias](https://github.com/AlexanderElias/)

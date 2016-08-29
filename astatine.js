@@ -74,9 +74,7 @@
 				if (options.complete) return options.complete(xhr, null);
 			};
 
-			setTimeout(function () {
-				ajax(options);
-			}, 2000);
+			ajax(options);
 		});
 	}
 
@@ -140,43 +138,34 @@
 	}
 
 	function spinner (opt) {
-		return '\
-			.spinner {\
-				display: none;\
-				width: '+ opt.thickness +';\
-				height: '+ opt.thickness +';\
-				border: '+ opt.size +' solid '+ opt.colorBottom +';\
-				border-top: '+ opt.size +' solid '+ opt.colorTop +';\
-				border-radius: 50%;\
-				animation: spin 2s linear infinite;\
-				-o-animation: spin 2s linear infinite;\
-				-moz-animation: spin 2s linear infinite;\
-				-webkit-animation: spin 2s linear infinite;\
-			}\
-			@keyframes spin {\
-				0% { transform: rotate(0deg); }\
-				100% { transform: rotate(360deg); }\
-			}\
-			@-o-keyframes spin {\
-				0% { -o-transform: rotate(0deg); }\
-				100% { -o-transform: rotate(360deg); }\
-			}\
-			@-moz-keyframes spin {\
-				0% { -moz-transform: rotate(0deg); }\
-				100% { -moz-transform: rotate(360deg); }\
-			}\
-			@-webkit-keyframes spin {\
-				0% { -webkit-transform: rotate(0deg); }\
-				100% { -webkit-transform: rotate(360deg); }\
-			}\
-		';
+		return '.spinner {'+
+			'display: none;'+
+			'width: '+ opt.thickness + ';'+
+			'height: '+ opt.thickness + ';'+
+			'border: '+ opt.size +' solid '+ opt.colorBottom + ';'+
+			'border-top: '+ opt.size + ' solid '+ opt.colorTop + ';'+
+			'border-radius: 50%;'+
+			'animation: spin 2s linear infinite;'+
+			'-o-animation: spin 2s linear infinite;'+
+			'-moz-animation: spin 2s linear infinite;'+
+			'-webkit-animation: spin 2s linear infinite; }'+
+		'@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }'+
+		'@-o-keyframes spin { 0% { -o-transform: rotate(0deg); } 100% { -o-transform: rotate(360deg); } }'+
+		'@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -moz-transform: rotate(360deg); } }'+
+		'@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }100% { -webkit-transform: rotate(360deg); } }';
 	}
 
 	/*
 		define
 	*/
 
-	var g = {
+	window.addEventListener('load', function () {
+		var style = document.createElement('style');
+		style.innerText = spinner(At.setup.spinner);
+		document.head.appendChild(style);
+	});
+
+	window.At = {
 		setup: {
 			spinner: {
 				size: '3px',
@@ -190,14 +179,5 @@
 		formData: formData,
 		serialize: serialize,
 	};
-
-	window.Astatine = g;
-	window.At = g;
-
-	window.addEventListener('load', function () {
-		var style = document.createElement('style');
-		style.innerText = spinner(At.setup.spinner);
-		document.head.appendChild(style);
-	});
 
 }());
