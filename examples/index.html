@@ -34,7 +34,7 @@
 
 		At.submit({
 			query: '.form-contact',
-			prepare: function (data, spinner) {
+			prepare: function (data) {
 				data.foo = 'bar';
 			},
 			complete: function (error, success) {

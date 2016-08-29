@@ -139,6 +139,7 @@
 
 	function spinner (opt) {
 		return '.spinner {'+
+			'margin: auto;'+
 			'display: none;'+
 			'width: '+ opt.thickness + ';'+
 			'height: '+ opt.thickness + ';'+
