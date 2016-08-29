@@ -1,0 +1,29 @@
+{
+  "name": "astatine",
+  "version": "1.0.0",
+  "description": "Astatine || At - Simple Small Ajax and HTML Form Library",
+  "main": "astatine.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexanderElias/astatine.git"
+  },
+  "keywords": [
+    "ajax",
+    "forms",
+    "html",
+    "xhr",
+    "input"
+  ],
+  "author": "Alexander Elias",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/AlexanderElias/astatine/issues"
+  },
+  "homepage": "https://github.com/AlexanderElias/astatine#readme"
+}
