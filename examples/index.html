@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+
+	<form class="form-contact" method="POST" action="/examples/index.html">
+		<div class="form-response"></div>
+		<input type="text" name="name" placeholder="Name:" required/>
+		<input type="submit" value="Submit"/>
+	</form>
+
+	<script src="../astatine.js"></script>
+	<script>
+
+		At.setup.spinner.colorTop = 'blue';
+		At.setup.spinner.colorBottom = 'red';
+
+		// At.ajax({
+		// 	data: { name: 'stuff' },
+		// 	method: 'get',
+		// 	action: '/examples/index.html',
+		// 	success: function (xhr) {
+		// 		console.log(xhr);
+		// 	},
+		// 	error: function (xhr) {
+		// 		console.log(xhr);
+		// 	}
+		// });
+
+		At.submit({
+			query: '.form-contact',
+			prepare: function (data, spinner) {
+				data.foo = 'bar';
+			},
+			complete: function (error, success) {
+				var response = document.querySelector('.form-response');
+
+				if (error) {
+					console.log(error);
+					response.style.color = 'red';
+					response.innerText = 'Error';
+				}
+				else {
+					response.style.color = 'green';
+					response.innerText = 'Form Is Sent';
+				}
+
+			}
+		});
+
+	</script>
+
+
+</body>
+</html>
