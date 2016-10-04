@@ -23,6 +23,7 @@
 		xhr.open(options.method, options.action, true, options.username, options.password);
 
 		if (options.mimeType) xhr.overrideMimeType(options.mimeType);
+		if (options.withCredentials) xhr.withCredentials = options.withCredentials;
 
 		if (options.headers) {
 			for (var name in options.headers) {

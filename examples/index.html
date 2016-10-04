@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title></title>
+	<title>Astatine</title>
+
+	<!-- <script src="../astatine.min.js"></script> -->
+	<script src="../astatine.js"></script>
 </head>
 <body>
 
-
 	<form class="form-contact" method="POST" action="/examples/index.html">
 		<div class="form-response"></div>
-		<input type="text" name="name" placeholder="Name:" required/>
+		<input type="text" name="firstName" placeholder="Name:" required/>
 		<input type="submit" value="Submit"/>
 	</form>
 
-	<script src="../astatine.min.js"></script>
-	<!-- <script src="../astatine.js"></script> -->
 	<script>
 
 		At.setup.spinner.colorTop = 'blue';
@@ -35,6 +34,7 @@
 		At.submit({
 			query: '.form-contact',
 			prepare: function (data) {
+				console.log(data);
 				data.foo = 'bar';
 			},
 			complete: function (error, success) {
