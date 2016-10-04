@@ -35,6 +35,9 @@ Submit form. Error and Success are your XHR response. Creates a spinner with the
 ##### Features
 - `application/json` automatically stringiifed to json string.
 - `application/x-www-form-urlencoded` automatically serialized to url params.
+- `radio` will only appear if it is checked.
+- `checkbox` will either be `true` or `false`.
+- `type="submit"` will automatically hide.
 
 ##### Options
 - **query**: `String` Query selector to form element

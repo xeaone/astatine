@@ -35,8 +35,7 @@
 			if (xhr.readyState === 4) {
 				if (xhr.status >= 200 && xhr.status < 300) {
 					if (options.success) return options.success(xhr);
-				}
-				else {
+				} else {
 					if (options.error) return options.error(xhr);
 				}
 			}
@@ -72,6 +71,8 @@
 			options.error = function (xhr) {
 				if (spinner) spinner.style.display = 'none';
 				if (submit) submit.style.display = 'block';
+
+				options.data = null;
 				if (options.complete) return options.complete(xhr, null);
 			};
 
@@ -91,11 +92,28 @@
 	}
 
 	function formData (element) {
+		var children = element.querySelectorAll('input, textarea');
 		var data = {};
 
-		eachChild(element, function (name, value) {
-			data[name] = value;
-		});
+		for (var i = 0, l = children.length; i < l; i++) {
+			var child = children[i];
+			var name = child.name;
+			var type = child.type;
+			var value = child.value;
+			var checked = child.checked;
+			var disabled = child.disabled;
+
+			if (name && !disabled && type !== 'submit' && type !== 'reset' && type !== 'button' && type !== 'file') {
+				if (type === 'checkbox') {
+					data[name] = checked;
+				} else if (type === 'radio') {
+					if (checked) data[name] = value;
+				} else {
+					data[name] = value;
+				}
+			}
+
+		}
 
 		return data;
 	}
@@ -104,27 +122,10 @@
 		internal
 	*/
 
-	function eachChild (el, fn) {
-		var children = el.children;
-
-		for (var i = 1, l = children.length; i < l; i++) {
-			var child = children[i];
-			var value = child.value;
-			var name = child.name;
-			var type = child.type
-
-			if (name && child.nodeName.toLowerCase() != 'fieldset' && !child.disabled &&
-			type != 'submit' && type != 'reset' && type != 'button' && type != 'file' &&
-			((type != 'radio' && type != 'checkbox') || child.checked)) {
-				fn(name, value);
-			}
-		}
-	}
-
 	function onSubmit (query, callback) {
 		var element = document.querySelector(query);
-
 		var spinner = document.createElement('div');
+
 		spinner.classList.add('spinner');
 		element.appendChild(spinner);
 
@@ -132,20 +133,20 @@
 			e.preventDefault();
 
 			var form = e.target;
-			var submit = form.querySelector('[type=submit]');
+			var submit =  form.querySelector('[type=submit]');
 
 			return callback(form, submit, spinner);
 		});
 	}
 
-	function spinner (opt) {
+	function spinner (options) {
 		return '.spinner {'+
 			'margin: auto;'+
 			'display: none;'+
-			'width: '+ opt.thickness + ';'+
-			'height: '+ opt.thickness + ';'+
-			'border: '+ opt.size +' solid '+ opt.colorBottom + ';'+
-			'border-top: '+ opt.size + ' solid '+ opt.colorTop + ';'+
+			'width: '+ options.thickness + ';'+
+			'height: '+ options.thickness + ';'+
+			'border: '+ options.size +' solid '+ options.colorBottom + ';'+
+			'border-top: '+ options.size + ' solid '+ options.colorTop + ';'+
 			'border-radius: 50%;'+
 			'animation: spin 2s linear infinite;'+
 			'-o-animation: spin 2s linear infinite;'+
@@ -156,10 +157,6 @@
 		'@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -moz-transform: rotate(360deg); } }'+
 		'@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }100% { -webkit-transform: rotate(360deg); } }';
 	}
-
-	/*
-		define
-	*/
 
 	window.addEventListener('load', function () {
 		var style = document.createElement('style');

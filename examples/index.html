@@ -3,14 +3,24 @@
 <head>
 	<title>Astatine</title>
 
-	<!-- <script src="../astatine.min.js"></script> -->
-	<script src="../astatine.js"></script>
+	<script src="../astatine.min.js"></script>
+	<!-- <script src="../astatine.js"></script> -->
 </head>
 <body>
 
 	<form class="form-contact" method="POST" action="/examples/index.html">
 		<div class="form-response"></div>
-		<input type="text" name="firstName" placeholder="Name:" required/>
+
+		<fieldset>
+			Name: <input type="text" name="name" required/><br>
+
+			Is Human: <input type="checkbox" name="human"><br>
+
+			<input type="radio" name="gender" value="male"> Male<br>
+			<input type="radio" name="gender" value="female"> Female<br>
+
+		</fieldset>
+
 		<input type="submit" value="Submit"/>
 	</form>
 
