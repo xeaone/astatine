@@ -158,12 +158,6 @@
 		'@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }100% { -webkit-transform: rotate(360deg); } }';
 	}
 
-	window.addEventListener('load', function () {
-		var style = document.createElement('style');
-		style.innerText = spinner(At.setup.spinner);
-		document.head.appendChild(style);
-	});
-
 	window.At = {
 		setup: {
 			spinner: {
@@ -178,5 +172,11 @@
 		formData: formData,
 		serialize: serialize,
 	};
+
+	document.addEventListener('load', function () {
+		var style = document.createElement('style');
+		style.innerText = spinner(window.At.setup.spinner);
+		document.head.appendChild(style);
+	});
 
 }());
