@@ -40,7 +40,7 @@ Submit form. Error and Success are your XHR response. Creates a spinner with the
 - `type="submit"` will automatically hide.
 
 ##### Options
-- **query**: `String` Query selector to form element
+- **query**: `String || Object` Query selector or element
 - **\***: Any `At.ajax` options
 
 ```html

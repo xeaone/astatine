@@ -123,7 +123,7 @@
 	*/
 
 	function onSubmit (query, callback) {
-		var element = document.querySelector(query);
+		var element = typeof query === 'string' ? document.querySelector(query) : query;
 		var spinner = document.createElement('div');
 
 		spinner.classList.add('spinner');
@@ -140,7 +140,9 @@
 	}
 
 	function spinner (options) {
-		return '.spinner {'+
+		var s = ``+``;
+		return '' +
+		'.spinner {'+
 			'margin: auto;'+
 			'display: none;'+
 			'width: '+ options.thickness + ';'+
@@ -151,20 +153,36 @@
 			'animation: spin 2s linear infinite;'+
 			'-o-animation: spin 2s linear infinite;'+
 			'-moz-animation: spin 2s linear infinite;'+
-			'-webkit-animation: spin 2s linear infinite; }'+
+			'-webkit-animation: spin 2s linear infinite;'+
+		'}'+
 		'@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }'+
 		'@-o-keyframes spin { 0% { -o-transform: rotate(0deg); } 100% { -o-transform: rotate(360deg); } }'+
 		'@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -moz-transform: rotate(360deg); } }'+
 		'@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }100% { -webkit-transform: rotate(360deg); } }';
 	}
 
+	function addSpinnerStyle (options) {
+		var head = document.head;
+
+		var oldStyle = head.querySelector('[title=Astatine]');
+
+		var sSpinner = spinner(options);
+		var eStyle = document.createElement('style');
+		var nStyle = document.createTextNode(sSpinner);
+		eStyle.setAttribute('title', 'Astatine');
+		eStyle.appendChild(nStyle);
+
+		if (oldStyle) head.replaceChild(eStyle, oldStyle);
+		else document.head.appendChild(eStyle);
+	}
+
 	window.At = {
 		setup: {
 			spinner: {
-				size: '3px',
-				thickness: '15px',
-				colorTop: 'darkgray',
-				colorBottom: 'lightgray'
+				s: '3px',
+				t: '15px',
+				ct: 'darkgray',
+				cb: 'lightgray'
 			}
 		},
 		ajax: ajax,
@@ -173,10 +191,25 @@
 		serialize: serialize,
 	};
 
-	document.addEventListener('load', function () {
-		var style = document.createElement('style');
-		style.innerText = spinner(window.At.setup.spinner);
-		document.head.appendChild(style);
+	Object.defineProperties(window.At.setup.spinner, {
+		size: {
+			get: function () { return this.s; },
+			set: function (n) { this.s = n; addSpinnerStyle(this); }
+		},
+		thickness: {
+			get: function () { return this.t; },
+			set: function (n) { this.t = n; addSpinnerStyle(this); }
+		},
+		colorTop: {
+			get: function () { return this.ct; },
+			set: function (n) { this.ct = n; addSpinnerStyle(this); }
+		},
+		colorBottom: {
+			get: function () { return this.cb; },
+			set: function (n) { this.cb = n; addSpinnerStyle(this); }
+		}
 	});
+
+	addSpinnerStyle(window.At.setup.spinner);
 
 }());
