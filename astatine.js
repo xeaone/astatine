@@ -92,7 +92,7 @@
 	}
 
 	function formData (element) {
-		var children = element.querySelectorAll('input, textarea');
+		var children = element.querySelectorAll('input, textarea, select');
 		var data = {};
 
 		for (var i = 0, l = children.length; i < l; i++) {
