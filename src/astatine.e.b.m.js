@@ -224,4 +224,6 @@ Object.defineProperties(astatine.setup.spinner, {
 window.At = astatine;
 window.Astatine = astatine;
 
-addSpinnerStyle(window.Astatine.setup.spinner);
+document.addEventListener('DOMContentLoaded', function () {
+	addSpinnerStyle(window.Astatine.setup.spinner);
+});
