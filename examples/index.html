@@ -2,9 +2,7 @@
 <html>
 <head>
 	<title>Astatine</title>
-
-	<!-- <script src="../astatine.min.js"></script> -->
-	<script src="../astatine.js"></script>
+	<script src="../dist/astatine.js"></script>
 </head>
 <body>
 
@@ -25,10 +23,10 @@
 	</form>
 
 	<script>
-		At.setup.spinner.colorTop = 'blue';
-		At.setup.spinner.colorBottom = 'red';
+		Astatine.setup.spinner.colorTop = 'blue';
+		Astatine.setup.spinner.colorBottom = 'red';
 
-		// At.ajax({
+		// Astatine.ajax({
 		// 	data: { name: 'stuff' },
 		// 	method: 'get',
 		// 	action: '/examples/index.html',
@@ -40,7 +38,7 @@
 		// 	}
 		// });
 
-		At.submit({
+		Astatine.submit({
 			query: '.form-contact',
 			prepare: function (data) {
 				console.log(data);
@@ -53,8 +51,7 @@
 					console.log(error);
 					response.style.color = 'red';
 					response.innerText = 'Error';
-				}
-				else {
+				} else {
 					response.style.color = 'green';
 					response.innerText = 'Form Is Sent';
 				}
