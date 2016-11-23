@@ -1,9 +1,9 @@
 # Astatine
-Astatine || At - Simple Small Ajax and HTML Form Library
+Astatine || At - Simple Small Ajax and HTML Form Library. Library entry point. Globally available by using **Astatine** or **At**.
 
 
 ## Overview
-- 3.1KB uncompressed
+- 3KB uncompressed
 - Install `npm install astatine`
 - Link `astatine.min.js`
 - ES5 browsers and up. (Probably older ones but who cares about those)
@@ -11,25 +11,20 @@ Astatine || At - Simple Small Ajax and HTML Form Library
 
 ## API
 
-### Astatine || At
-Library entry point. Globally available by using **At**.
 
-
-### At.setup
-#### At.setup.spinner
+### Astatine.setup.spinner
 Sets up spinner color, thickness, and size. Defaults are listed bellow. Do this before any Astatine or At operations.
 
-##### Usage
+##### Example
 ```JavaScript
-At.setup.spinner.size = '3px';
-At.setup.spinner.thickness = '15px';
-At.setup.spinner.colorTop = 'darkgray';
-At.setup.spinner.colorBottom = 'lightgray';
+Astatine.setup.spinner.size = '3px';
+Astatine.setup.spinner.thickness = '15px';
+Astatine.setup.spinner.colorTop = 'darkgray';
+Astatine.setup.spinner.colorBottom = 'lightgray';
 ```
 
 
-### At.submit
-#### At.submit(options)
+### Astatine.submit(options)
 Submit form. Error and Success are your XHR response. Creates a spinner with the class `.spinner` and hides `type=submit`.
 
 ##### Features
@@ -40,21 +35,31 @@ Submit form. Error and Success are your XHR response. Creates a spinner with the
 - `type="submit"` will automatically hide.
 
 ##### Options
-- **query**: `String || Object` Query selector or element
-- **\***: Any `At.ajax` options
+The options object accepts all items form the `Astatine.ajax` method.
 
-```html
-<form class="form-contact" method="POST" enctype="application/json" action="/examples/index.html">
-	<input type="text" name="name" placeholder="Name:" required/>
+- **query** `String | Element` Query selector or element.
+- **prepare** `Function` Parameters `data` the return value can be one of the following:
+	- **Function** Parameters `resolve/callback` to be used for async methods
+	- **Object** The form data object.
+	- **Null** If the return value is null or undefined the form data object will be used.
+- **complete** `Function` Parameters `error, success`
+
+##### Example
+```HTML
+<form class="form" method="post" enctype="application/json" action="/post/path">
+	<input type="text" name="name" placeholder="Name" required>
 	<input type="submit" value="Submit"/>
 </form>
 ```
-
 ```JavaScript
-At.submit({
-	query: '.form-contact',
+Astatine.submit({
+	query: '.form',
 	prepare: function (data) {
 		data.foo = 'bar'; // manipulate data before send
+
+		return function (resolve) { // async
+			resolve(data);
+		}
 	},
 	complete: function (error, success) {
 		if (error) console.log(error);
@@ -64,8 +69,7 @@ At.submit({
 ```
 
 
-### At.ajax
-#### At.ajax(options)
+### Astatine.ajax(options)
 Ajax is a lower level utility function that allows for more control but less features than the submit method.
 
 ##### Options
@@ -75,13 +79,14 @@ Ajax is a lower level utility function that allows for more control but less fea
 - **username**: `String`
 - **password**: `String`
 - **mimeType**: `String` Overwrites return type
-- **data**: `Object` If method is `GET` than data is concatenated to the `action/url` as params
+- **data**: `Object` If method is `GET` than data is concatenated to the `action/url` as parameters
 - **headers**: `Object`
-- **prepare**: `Function`
-- **complete**: `Function`
+- **success**: `Function`
+- **error**: `Function`
 
+##### Example
 ```JavaScript
-At.ajax({
+Astatine.ajax({
 	data: { name: 'stuff' }, // params or data
 	method: 'get', // post put delete
 	action: '/examples/index.html',
@@ -95,25 +100,25 @@ At.ajax({
 ```
 
 
-### At.formData
-#### At.formData(element)
+### Astatine.formData(element)
 
 ##### Parameter
 - `Object` DOM element
 
+##### Example
 ```JavaScript
-var objectData = At.formData(element);
+var objectData = Astatine.formData(element);
 ```
 
 
-### At.serialize
-#### At.serialize(data)
+### Astatine.serialize(data)
 
 ##### Parameter
 - `Object` Single level deep key value pare
 
+##### Example
 ```JavaScript
-var stringData = At.serialize(data);
+var stringData = Astatine.serialize(data);
 ```
 
 

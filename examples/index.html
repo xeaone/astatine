@@ -6,22 +6,6 @@
 </head>
 <body>
 
-	<form class="form-contact" method="POST" action="/examples/index.html">
-		<div class="form-response"></div>
-
-		<fieldset>
-			Name: <input type="text" name="name" required/><br>
-
-			Is Human: <input type="checkbox" name="human"><br>
-
-			<input type="radio" name="gender" value="male"> Male<br>
-			<input type="radio" name="gender" value="female"> Female<br>
-
-		</fieldset>
-
-		<input type="submit" value="Submit"/>
-	</form>
-
 	<script>
 		Astatine.setup.spinner.colorTop = 'blue';
 		Astatine.setup.spinner.colorBottom = 'red';
@@ -39,13 +23,16 @@
 		// });
 
 		Astatine.submit({
-			query: '.form-contact',
+			query: '.form',
 			prepare: function (data) {
-				console.log(data);
 				data.foo = 'bar';
+
+				return function (resolve) {
+					resolve(data);
+				}
 			},
 			complete: function (error, success) {
-				var response = document.querySelector('.form-response');
+				var response = document.querySelector('.response');
 
 				if (error) {
 					console.log(error);
@@ -53,14 +40,29 @@
 					response.innerText = 'Error';
 				} else {
 					response.style.color = 'green';
-					response.innerText = 'Form Is Sent';
+					response.innerText = 'Success';
 				}
 
 			}
 		});
-
 	</script>
 
+	<form class="form" method="post" action="/examples/index.html">
+		<span>Name: </span>
+		<input type="text" name="name" required>
+		<br>
+
+		<span>Is Human: </span>
+		<input type="checkbox" name="human">
+		<br>
+
+		<input type="radio" name="gender" value="male"> Male<br>
+		<input type="radio" name="gender" value="female"> Female<br>
+
+		<input type="submit" value="Submit"/>
+	</form>
+
+	<div class="response"></div>
 
 </body>
 </html>

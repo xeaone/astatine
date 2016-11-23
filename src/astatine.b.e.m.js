@@ -1,8 +1,55 @@
 /*
-	version: 1.1.0
+	version: 1.1.2
 	title: astatine
 	author: alexander elias
 */
+
+function serialize (data) {
+	var string = '';
+	var name = null;
+
+	for (name in data) {
+		string = string.length > 0 ? string + '&' : string;
+		string = string + encodeURIComponent(name) + '=' + encodeURIComponent(data[name]);
+	}
+
+	return string;
+}
+
+function formData (element) {
+	var children = element.querySelectorAll('input, textarea, select');
+	var data = {};
+
+	for (var i = 0, l = children.length; i < l; i++) {
+		var child = children[i];
+		var name = child.name;
+		var type = child.type;
+		var value = child.value;
+		var checked = child.checked;
+		var disabled = child.disabled;
+
+		if (name && !disabled && type !== 'submit' && type !== 'reset' && type !== 'button' && type !== 'file') {
+			if (type === 'checkbox') {
+				data[name] = checked;
+			} else if (type === 'radio') {
+				if (checked) data[name] = value;
+			} else if (type === 'select-one' || type === 'select-multiple') {
+				data[name] = [];
+
+				for (var c = 0, t = child.selectedOptions.length; c < t; c++) {
+					data[name].push(child.selectedOptions[c].value);
+				}
+
+				data[name] = data[name].join(', ');
+			} else {
+				data[name] = value;
+			}
+		}
+
+	}
+
+	return data;
+}
 
 function ajax (options) {
 	if (!options) throw new Error('Astatine.ajax: requires options');
@@ -47,6 +94,21 @@ function ajax (options) {
 	xhr.send(options.data);
 }
 
+function onSubmit (query, callback) {
+	window.addEventListener('DOMContentLoaded', function () {
+		var form = typeof query === 'string' ? document.querySelector(query) : query;
+		var spinner = document.createElement('div');
+
+		spinner.classList.add('spinner');
+		form.appendChild(spinner);
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			callback(form, form.querySelector('[type=submit]'), spinner);
+		});
+	});
+}
+
 function submit (options) {
 	if (!options) throw new Error('Astatine.submit: requires options');
 	if (!options.query) throw new Error('Astatine.submit: requires options.query');
@@ -60,8 +122,6 @@ function submit (options) {
 		options.method = options.method || form.getAttribute('method');
 		options.enctype = options.enctype || form.getAttribute('enctype');
 		options.headers = options.headers || { 'Content-Type': options.enctype };
-
-		if (options.prepare) options.prepare(options.data);
 
 		options.success = function (xhr) {
 			if (spinner) spinner.style.display = 'none';
@@ -79,74 +139,19 @@ function submit (options) {
 			if (options.complete) return options.complete(xhr, null);
 		};
 
-		ajax(options);
-	});
-}
-
-function serialize (data) {
-	var string = '';
-
-	for (var name in data) {
-		string = string.length > 0 ? string + '&' : string;
-		string = string + encodeURIComponent(name) + '=' + encodeURIComponent(data[name]);
-	}
-
-	return string;
-}
-
-function formData (element) {
-	var children = element.querySelectorAll('input, textarea, select');
-	var data = {};
-
-	for (var i = 0, l = children.length; i < l; i++) {
-		var child = children[i];
-		var name = child.name;
-		var type = child.type;
-		var value = child.value;
-		var checked = child.checked;
-		var disabled = child.disabled;
-
-		if (name && !disabled && type !== 'submit' && type !== 'reset' && type !== 'button' && type !== 'file') {
-			if (type === 'checkbox') {
-				data[name] = checked;
-			} else if (type === 'radio') {
-				if (checked) data[name] = value;
-			} else if (type === 'select-one' || type === 'select-multiple') {
-				data[name] = [];
-
-				for (var c = 0, t = child.selectedOptions.length; c < t; c++) {
-					data[name].push(child.selectedOptions[c].value);
-				}
-
-				data[name] = data[name].join(', ');
-			} else {
-				data[name] = value;
-			}
+		if (options.prepare) {
+			options.data = options.prepare(options.data) || options.data;
 		}
 
-	}
+		if (typeof options.data === 'function') {
+			options.data(function (data) {
+				options.data = data;
+				ajax(options);
+			});
+		} else {
+			ajax(options);
+		}
 
-	return data;
-}
-
-/*
-	internal
-*/
-
-function onSubmit (query, callback) {
-	var element = typeof query === 'string' ? document.querySelector(query) : query;
-	var spinner = document.createElement('div');
-
-	spinner.classList.add('spinner');
-	element.appendChild(spinner);
-
-	element.addEventListener('submit', function (e) {
-		e.preventDefault();
-
-		var form = e.target;
-		var submit =  form.querySelector('[type=submit]');
-
-		return callback(form, submit, spinner);
 	});
 }
 
@@ -155,20 +160,23 @@ function spinner (options) {
 	.spinner {
 		margin: auto;
 		display: none;
-		width:  ${options.thickness};
-		height:  ${options.thickness};
-		border:  ${options.size} solid ${options.colorBottom};
-		border-top: ${options.size} solid ${options.colorTop};
+		width: ${options.thickness};
+		height: ${options.thickness};
+		border: solid ${options.size} ${options.colorBottom};
+		border-top: solid ${options.size} ${options.colorTop};
 		border-radius: 50%;
 		animation: spin 2s linear infinite;
 		-o-animation: spin 2s linear infinite;
+		-ms-animation: spin 2s linear infinite;
 		-moz-animation: spin 2s linear infinite;
 		-webkit-animation: spin 2s linear infinite;
 	}
 	@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 	@-o-keyframes spin { 0% { -o-transform: rotate(0deg); } 100% { -o-transform: rotate(360deg); } }
+	@-ms-keyframes spin { 0% { -ms-transform: rotate(0deg); } 100% { -ms-transform: rotate(360deg); } }
 	@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -moz-transform: rotate(360deg); } }
-	@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }100% { -webkit-transform: rotate(360deg); } }`;
+	@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); }100% { -webkit-transform: rotate(360deg); } }
+	`;
 }
 
 function addSpinnerStyle (options) {
