@@ -76,7 +76,8 @@ function ajax (options) {
 	if (options.withCredentials) xhr.withCredentials = options.withCredentials;
 
 	if (options.headers) {
-		for (var name in options.headers) {
+		var name = null;
+		for (name in options.headers) {
 			xhr.setRequestHeader(name, options.headers[name]);
 		}
 	}
