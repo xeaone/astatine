@@ -33,7 +33,7 @@ Submit form. Error and Success are your XHR response. Creates a spinner with the
 ##### Special Features
 - `radio` will only appear if it is checked.
 - `checkbox` will either be `true` or `false`.
-- `type="submit"` will automatically hide.
+- `type="submit"` will automatically hide. And a spinner will show on submit.
 
 ##### Options
 The options object accepts all items form the `Astatine.ajax` method. Please review that section for more detail.
@@ -48,10 +48,10 @@ The options object accepts all items form the `Astatine.ajax` method. Please rev
 
 - `reset: Boolean` Resets form after submit success.
 
-- `prepare: Function` Parameters `data` the return value can be one of the following:
-	- `Function` Parameters `resolve/callback` to be used for async methods
-	- `Object` The form data object.
-	- `Null` If the return value is null or undefined the form data object will be used.
+- `prepare: Function` Alows the ability to edit the option.data object before submission.
+	- `data: Object` The form data object.
+	- `resolve: Function` Async resolve function requires the data as a parameter.
+	- `reject: Function` Async reject passes its parameter to the complete function as an error.
 
 ##### Example
 ```HTML
@@ -63,12 +63,16 @@ The options object accepts all items form the `Astatine.ajax` method. Please rev
 ```JavaScript
 Astatine.submit({
 	query: '.form',
-	prepare: function (data) {
+	prepare: function (data, resolve, reject) {
 		data.foo = 'bar'; // manipulate data before send
 
-		return function (resolve) { // async
-			resolve(data);
-		}
+		// return data;
+
+		setTimeout(function () {
+			if (true) resolve(data); // async resolve
+			else reject({ response: 'rejected' }); // async reject
+		}, 1000);
+
 	},
 	complete: function (error, success) {
 		if (error) console.log(error);
