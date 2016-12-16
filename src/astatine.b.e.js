@@ -1,5 +1,5 @@
 /*
-	version: 1.1.2
+	version: 1.1.6
 	title: astatine
 	author: alexander elias
 */
