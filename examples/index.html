@@ -6,50 +6,9 @@
 </head>
 <body>
 
-	<script>
-		Astatine.setup.spinner.colorTop = 'blue';
-		Astatine.setup.spinner.colorBottom = 'red';
-
-		// Astatine.ajax({
-		// 	data: { name: 'stuff' },
-		// 	method: 'get',
-		// 	action: '/examples/index.html',
-		// 	success: function (xhr) {
-		// 		console.log(xhr);
-		// 	},
-		// 	error: function (xhr) {
-		// 		console.log(xhr);
-		// 	}
-		// });
-
-		Astatine.submit({
-			query: '.form',
-			prepare: function (data) {
-				data.foo = 'bar';
-
-				return function (resolve) {
-					resolve(data);
-				}
-			},
-			complete: function (error, success) {
-				var response = document.querySelector('.response');
-
-				if (error) {
-					console.log(error);
-					response.style.color = 'red';
-					response.innerText = 'Error';
-				} else {
-					response.style.color = 'green';
-					response.innerText = 'Success';
-				}
-
-			}
-		});
-	</script>
-
-	<form class="form" method="post" action="/examples/index.html">
+	<form class="form" method="post" action="https://formspree.io/alex.steven.elias@gmail.com">
 		<span>Name: </span>
-		<input type="text" name="name" required>
+		<input type="text" name="name" autofocus>
 		<br>
 
 		<span>Is Human: </span>
@@ -66,3 +25,41 @@
 
 </body>
 </html>
+
+<script>
+	Astatine.setup.spinner.colorTop = 'blue';
+	Astatine.setup.spinner.colorBottom = 'red';
+
+	Astatine.submit({
+		query: '.form',
+		// requestType: 'json',
+		responseType: 'json',
+		prepare: function (data, resolve, reject) {
+			data.foo = 'bar';
+
+			// return data;
+
+			setTimeout(function () {
+				resolve(data);
+			}, 1000);
+
+			// setTimeout(function () {
+			// 	reject({ response: 'rejected' });
+			// }, 1000);
+		},
+		complete: function (error, success) {
+			var response = document.querySelector('.response');
+
+			if (error) {
+				console.log(error);
+				response.style.color = 'red';
+				response.innerText = 'Error';
+			} else {
+				console.log(success);
+				response.style.color = 'green';
+				response.innerText = 'Success';
+			}
+
+		}
+	});
+</script>

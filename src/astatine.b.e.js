@@ -4,6 +4,15 @@
 	author: alexander elias
 */
 
+var Mime = {
+	script: 'text/javascript, application/javascript, application/x-javascript',
+	json: 'application/json, text/javascript',
+	xml: 'application/xml, text/xml',
+	html: 'text/html',
+	text: 'text/plain',
+	urlencoded: 'application/x-www-form-urlencoded'
+};
+
 function serialize (data) {
 	var string = '';
 	var name = null;
@@ -17,7 +26,7 @@ function serialize (data) {
 }
 
 function formData (element) {
-	var children = element.querySelectorAll('input, textarea, select');
+	var children = element.getElementsByTagName('*');
 	var data = {};
 
 	for (var i = 0, l = children.length; i < l; i++) {
@@ -27,8 +36,9 @@ function formData (element) {
 		var value = child.value;
 		var checked = child.checked;
 		var disabled = child.disabled;
+		var tag = child.tagName.toLowerCase();
 
-		if (name && !disabled && type !== 'submit' && type !== 'reset' && type !== 'button' && type !== 'file') {
+		if ( (tag === 'input' || tag === 'textarea' || tag === 'select') && name && !disabled && type !== 'submit' && type !== 'reset' && type !== 'button' && type !== 'file') {
 			if (type === 'checkbox') {
 				data[name] = checked;
 			} else if (type === 'radio') {
@@ -45,54 +55,9 @@ function formData (element) {
 				data[name] = value;
 			}
 		}
-
 	}
 
 	return data;
-}
-
-function ajax (options) {
-	if (!options) throw new Error('Astatine.ajax: requires options');
-
-	if (!options.action) options.action = window.location.pathname;
-	if (!options.enctype) options.enctype = 'text/plain';
-	if (!options.method) options.method = 'GET';
-	else options.method = options.method.toUpperCase();
-
-	if (options.data) {
-		if (options.method === 'GET') {
-			options.action = options.action + '?' + serialize(options.data);
-			options.data = null;
-		} else {
-			if (options.enctype.search('application/x-www-form-urlencoded') !== -1) options.data = serialize(options.data);
-			else if (options.enctype.search('application/json') !== -1) options.data = JSON.stringify(options.data);
-		}
-	}
-
-	var xhr = new XMLHttpRequest();
-	xhr.open(options.method, options.action, true, options.username, options.password);
-
-	if (options.mimeType) xhr.overrideMimeType(options.mimeType);
-	if (options.withCredentials) xhr.withCredentials = options.withCredentials;
-
-	if (options.headers) {
-		var name = null;
-		for (name in options.headers) {
-			xhr.setRequestHeader(name, options.headers[name]);
-		}
-	}
-
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState === 4) {
-			if (xhr.status >= 200 && xhr.status < 300) {
-				if (options.success) return options.success(xhr);
-			} else {
-				if (options.error) return options.error(xhr);
-			}
-		}
-	};
-
-	xhr.send(options.data);
 }
 
 function onSubmit (query, callback) {
@@ -110,9 +75,84 @@ function onSubmit (query, callback) {
 	});
 }
 
+function ajax (options) {
+	if (!options) throw new Error('Astatine.ajax: requires options');
+	if (!options.action) throw new Error('Astatine.ajax: requires options.action');
+	if (!options.method) throw new Error('Astatine.ajax: requires options.method');
+	if (!options.success) throw new Error('Astatine.ajax: requires options.success');
+	if (!options.error) throw new Error('Astatine.ajax: requires options.error');
+	if (!options.headers) options.headers = {};
+
+	if (options.data) {
+		if (options.method === 'GET') {
+			options.action = options.action + '?' + serialize(options.data);
+			options.data = null;
+		} else {
+			switch (options.requestType) {
+				case 'script': options.contentType = Mime.script;
+					break;
+				case 'json': options.contentType = Mime.json;
+					break;
+				case 'xml': options.contentType = Mime.xml;
+					break;
+				case 'html': options.contentType = Mime.html;
+					break;
+				case 'text': options.contentType = Mime.text;
+					break;
+				default: options.contentType = Mime.urlencoded;
+			}
+
+			switch (options.responseType) {
+				case 'script': options.accept = Mime.script;
+					break;
+				case 'json': options.accept = Mime.json;
+					break;
+				case 'xml': options.accept = Mime.xml;
+					break;
+				case 'html': options.accept = Mime.html;
+					break;
+				case 'text': options.accept = Mime.text;
+					break;
+			}
+
+			if (options.contentType === Mime.json) options.data = JSON.stringify(options.data);
+			if (options.contentType === Mime.urlencoded) options.data = serialize(options.data);
+		}
+	}
+
+	var xhr = new XMLHttpRequest();
+	xhr.open(options.method.toUpperCase(), options.action, true, options.username, options.password);
+
+	if (options.mimeType) xhr.overrideMimeType(options.mimeType);
+	if (options.withCredentials) xhr.withCredentials = options.withCredentials;
+
+	if (options.accept) options.headers['Accept'] = options.accept;
+	if (options.contentType) options.headers['Content-Type'] = options.contentType;
+
+	if (options.headers) {
+		for (var name in options.headers) {
+			xhr.setRequestHeader(name, options.headers[name]);
+		}
+	}
+
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4) {
+			if (xhr.status >= 200 && xhr.status < 400) {
+
+				return options.success(xhr);
+			} else {
+				return options.error(xhr);
+			}
+		}
+	};
+
+	xhr.send(options.data);
+}
+
 function submit (options) {
 	if (!options) throw new Error('Astatine.submit: requires options');
 	if (!options.query) throw new Error('Astatine.submit: requires options.query');
+	if (!options.complete) throw new Error('Astatine.submit: requires options.complete');
 
 	onSubmit(options.query, function (form, submit, spinner) {
 		if (spinner) spinner.style.display = 'block';
@@ -121,15 +161,13 @@ function submit (options) {
 		options.data = options.data || formData(form);
 		options.action = options.action || form.getAttribute('action');
 		options.method = options.method || form.getAttribute('method');
-		options.enctype = options.enctype || form.getAttribute('enctype');
-		options.headers = options.headers || { 'Content-Type': options.enctype };
 
 		options.success = function (xhr) {
 			if (spinner) spinner.style.display = 'none';
 			if (submit) submit.style.display = 'block';
 
-			form.reset();
-			if (options.complete) return options.complete(null, xhr);
+			if (options.reset) form.reset();
+			options.complete(null, xhr);
 		};
 
 		options.error = function (xhr) {
@@ -137,20 +175,25 @@ function submit (options) {
 			if (submit) submit.style.display = 'block';
 
 			options.data = null;
-			if (options.complete) return options.complete(xhr, null);
+			options.complete(xhr, null);
 		};
 
 		if (options.prepare) {
-			options.data = options.prepare(options.data) || options.data;
-		}
-
-		if (typeof options.data === 'function') {
-			options.data(function (data) {
+			var resolve = function (data) {
 				options.data = data;
 				ajax(options);
-			});
-		} else {
-			ajax(options);
+			};
+			var reject = function (data) {
+				if (spinner) spinner.style.display = 'none';
+				if (submit) submit.style.display = 'block';
+				options.error(data);
+			};
+			options.prepare = options.prepare.bind(options, options.data, resolve, reject);
+			var data = options.prepare();
+			if (data) {
+				options.data = data;
+				ajax(options);
+			}
 		}
 
 	});
