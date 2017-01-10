@@ -64,17 +64,15 @@
 	}
 
 	function onSubmit(query, callback) {
-		window.addEventListener('DOMContentLoaded', function () {
-			var form = typeof query === 'string' ? document.querySelector(query) : query;
-			var spinner = document.createElement('div');
+		var form = typeof query === 'string' ? document.querySelector(query) : query;
+		var spinner = document.createElement('div');
 
-			spinner.classList.add('spinner');
-			form.appendChild(spinner);
+		spinner.classList.add('spinner');
+		form.appendChild(spinner);
 
-			form.addEventListener('submit', function (e) {
-				e.preventDefault();
-				callback(form, form.querySelector('[type=submit]'), spinner);
-			});
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			callback(form, form.querySelector('[type=submit]'), spinner);
 		});
 	}
 
