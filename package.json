@@ -1,7 +1,7 @@
 {
   "name": "astatine",
-  "version": "1.1.7",
-  "description": "Astatine || At - Simple Small Ajax and HTML Form Library",
+  "version": "1.1.8",
+  "description": "Astatine - A Small Ajax and HTML Form Library",
   "main": "astatine.js",
   "directories": {
     "example": "examples"

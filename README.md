@@ -1,5 +1,5 @@
 # Astatine
-Astatine || At - Simple Small Ajax and HTML Form Library. Library entry point. Globally available by using `Astatine` or `At`.
+Astatine - A Small Ajax and HTML Form Library. Library entry point. Globally available by using `Astatine` or `At`.
 
 
 ## Overview
@@ -28,27 +28,28 @@ Astatine.setup.spinner.colorBottom = 'lightgray';
 
 
 ### Astatine.submit(options)
-Submit form. Error and Success are your XHR response. Creates a spinner with the class `.spinner` and hides `type=submit`.
+Listens on a form element for submit event to be fired.
 
 ##### Special Features
 - `radio` will only appear if it is checked.
 - `checkbox` will either be `true` or `false`.
 - `type="submit"` will automatically hide. And a spinner will show on submit.
+- `.spinner` will automatically created and make visible a spinner.
 
 ##### Options
 The options object accepts all items form the `Astatine.ajax` method. Please review that section for more detail.
 
+- `action: String` Resource action url. **Required**
 - `query: String | Element` Query selector or element. **Required**
-- `action: String` Resource action url. If not defined on the options object it will look on the form element. **Required**
-- `method: String` Valid methods get, post, put, delete. If not defined on the options object it will look on the form element. **Required**
+- `method: String` Valid methods get, post, put, delete. **Required**
+
+- `reset: Boolean` Resets form after submit success. Defaults to true.
 
 - `complete: Function` Parameters are the XHR. **Required**
 	- `error` An xhr object
 	- `success` An xhr object
 
-- `reset: Boolean` Resets form after submit success.
-
-- `prepare: Function` Alows the ability to edit the option.data object before submission.
+- `prepare: Function` Allows the ability to edit/validate the option.data object before complete/post.
 	- `data: Object` The form data object.
 	- `resolve: Function` Async resolve function requires the data as a parameter.
 	- `reject: Function` Async reject passes its parameter to the complete function as an error.
