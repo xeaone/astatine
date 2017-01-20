@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Astatine</title>
-	<script src="../dist/astatine.js"></script>
+	<script src="../dist/astatine.min.js"></script>
 </head>
 <body>
 
@@ -32,7 +32,7 @@
 
 	Astatine.submit({
 		query: '.form',
-		// requestType: 'json',
+		requestType: 'json',
 		responseType: 'json',
 		prepare: function (data, resolve, reject) {
 			data.foo = 'bar';

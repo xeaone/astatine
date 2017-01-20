@@ -2,7 +2,7 @@
 	'use strict';
 
 	/*
- 	version: 1.1.6
+ 	version: 1.2.0
  	title: astatine
  	author: alexander elias
  */
@@ -166,6 +166,8 @@
 		if (!options.query) throw new Error('Astatine.submit: requires options.query');
 		if (!options.complete) throw new Error('Astatine.submit: requires options.complete');
 
+		if (options.reset === null || options.reset === undefined) options.reset = true;
+
 		onSubmit(options.query, function (form, submit, spinner) {
 			if (spinner) spinner.style.display = 'block';
 			if (submit) submit.style.display = 'none';
@@ -177,17 +179,14 @@
 			options.success = function (xhr) {
 				if (spinner) spinner.style.display = 'none';
 				if (submit) submit.style.display = 'block';
-
 				if (options.reset) form.reset();
-				options.complete(null, xhr);
+				options.complete(null, xhr, options.data);
 			};
 
 			options.error = function (xhr) {
 				if (spinner) spinner.style.display = 'none';
 				if (submit) submit.style.display = 'block';
-
-				options.data = null;
-				options.complete(xhr, null);
+				options.complete(xhr, null, options.data);
 			};
 
 			if (options.prepare) {

@@ -1,6 +1,6 @@
 {
   "name": "astatine",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "Astatine - A Small Ajax and HTML Form Library",
   "main": "astatine.js",
   "directories": {

@@ -1,5 +1,5 @@
 /*
-	version: 1.1.6
+	version: 1.2.0
 	title: astatine
 	author: alexander elias
 */
@@ -152,7 +152,7 @@ function submit (options) {
 	if (!options.query) throw new Error('Astatine.submit: requires options.query');
 	if (!options.complete) throw new Error('Astatine.submit: requires options.complete');
 
-	if (options.reset === null || options.reset === undefined) options.reset = true;  
+	if (options.reset === null || options.reset === undefined) options.reset = true;
 
 	onSubmit(options.query, function (form, submit, spinner) {
 		if (spinner) spinner.style.display = 'block';
